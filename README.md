@@ -135,24 +135,21 @@ source-dir
   source-dir is the directory where the definition of the target struct is located.
   If source-dir is not specified, current directory is set as source-dir.
 
-flags
-  -type string <required>
-      name of target struct
-
-  -receiver string <optional>
-      receiver receiver for generated accessor methods
-      default: first letter of struct
-
-  -output string <optional>
-      output file name
-      default: <type_name>_accessor.go
-
-  -lock string <optional>
-      specify lock field name and generate codes obtaining and releasing lock
-      this is used to prevent race condition when concurrent access can be expected
-
+Flags:
+  -get_prefix string
+        getter prefix, default Get (default "Get")
+  -lock string
+        lock name
+  -only_for_exported_field
+        generate only for exported fields
+  -output string
+        output file name; default <type_name>_accessor.go
+  -receiver string
+        receiver name; default first letter of type name
+  -type string
+        type name; must be set
   -version
-      show the current version of accessory
+        show the version of accessory
 ```
 
 Example:
