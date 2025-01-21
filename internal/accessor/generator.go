@@ -126,14 +126,20 @@ func (g *generator) generateAccessors(structs []*Struct) ([]string, error) {
 
 		for _, field := range st.Fields {
 			if field.Tag == nil {
-				continue
+				field.Tag = &Tag{}
+				// continue
 			}
 
 			if g.needsSkip(field) {
 				continue
 			}
+			// fmt.Printf("%+v\n", *field)
 
 			params := g.createMethodGenParameters(st, field)
+
+			if field.Tag.Getter == nil {
+				field.Tag.Getter = &params.GetterMethod
+			}
 
 			if field.Tag.Getter != nil {
 				getter, err := g.generateGetter(params)
@@ -233,6 +239,7 @@ func (g *generator) methodNames(field *Field) (getter, setter string) {
 		// If no getter name is specified in the tag,
 		// use the field name capitalized as the getter name.
 		getter = g.getPrefix + cases.Title(language.Und, cases.NoLower).String(field.Name)
+		// fmt.Printf("field getter name %v\n", getter)
 	}
 
 	if setterName := field.Tag.Setter; setterName != nil && *setterName != "" {
@@ -314,5 +321,6 @@ func (g *generator) zeroValue(t types.Type, typeString string) string {
 }
 
 func (g *generator) needsSkip(f *Field) bool {
+	// fmt.Printf("needsSkip %v\n", f)
 	return g.onlyForExportedField && !f.IsExported()
 }

@@ -86,6 +86,7 @@ func Execute(fs afero.Fs, args []string) {
 		accessor.GetPrefix(*getPrefix),
 		accessor.OnlyForExportedField(*onlyForExportedField),
 	}
+	// fmt.Println("onlyForExportedField", *onlyForExportedField)
 
 	if err = accessor.Generate(fs, src, options...); err != nil {
 		log.Fatal(err)
