@@ -39,6 +39,8 @@ func Execute(fs afero.Fs, args []string) {
 	lockName := flags.String("lock", "", "lock name")
 	receiver := flags.String("receiver", "", "receiver name; default first letter of type name")
 	output := flags.String("output", "", "output file name; default <type_name>_accessor.go")
+	getPrefix := flags.String("get_prefix", "Get", "getter prefix, default Get")
+	onlyForExportedField := flags.Bool("only_for_exported_field", false, "generate only for exported fields")
 
 	if err := flags.Parse(args[1:]); err != nil {
 		flags.Usage()
@@ -81,6 +83,8 @@ func Execute(fs afero.Fs, args []string) {
 		accessor.Output(*output),
 		accessor.Receiver(*receiver),
 		accessor.Lock(*lockName),
+		accessor.GetPrefix(*getPrefix),
+		accessor.OnlyForExportedField(*onlyForExportedField),
 	}
 
 	if err = accessor.Generate(fs, src, options...); err != nil {

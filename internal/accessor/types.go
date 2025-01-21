@@ -2,6 +2,7 @@ package accessor
 
 import (
 	"go/types"
+	"unicode"
 
 	"golang.org/x/tools/go/packages"
 )
@@ -32,6 +33,16 @@ type Field struct {
 	Name string
 	Type types.Type
 	Tag  *Tag
+}
+
+func (f *Field) IsExported() bool {
+	if f == nil {
+		return false
+	}
+	for _, r := range f.Name {
+		return unicode.IsUpper(r)
+	}
+	return false
 }
 
 // Tag contains the information of a struct field's tag.

@@ -20,10 +20,12 @@ import (
 type generator struct {
 	writer *writer
 
-	typ      string
-	output   string
-	receiver string
-	lock     string
+	typ                  string
+	output               string
+	receiver             string
+	lock                 string
+	getPrefix            string
+	onlyForExportedField bool
 
 	pkg     *packages.Package
 	imports []*Import
@@ -127,6 +129,10 @@ func (g *generator) generateAccessors(structs []*Struct) ([]string, error) {
 				continue
 			}
 
+			if g.needsSkip(field) {
+				continue
+			}
+
 			params := g.createMethodGenParameters(st, field)
 
 			if field.Tag.Getter != nil {
@@ -226,7 +232,7 @@ func (g *generator) methodNames(field *Field) (getter, setter string) {
 	} else {
 		// If no getter name is specified in the tag,
 		// use the field name capitalized as the getter name.
-		getter = cases.Title(language.Und, cases.NoLower).String(field.Name)
+		getter = g.getPrefix + cases.Title(language.Und, cases.NoLower).String(field.Name)
 	}
 
 	if setterName := field.Tag.Setter; setterName != nil && *setterName != "" {
@@ -305,4 +311,8 @@ func (g *generator) zeroValue(t types.Type, typeString string) string {
 	}
 
 	return "nil"
+}
+
+func (g *generator) needsSkip(f *Field) bool {
+	return g.onlyForExportedField && !f.IsExported()
 }

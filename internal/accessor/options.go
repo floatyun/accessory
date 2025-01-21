@@ -29,3 +29,15 @@ func Lock(lock string) Option {
 		g.lock = lock
 	}
 }
+
+func GetPrefix(p string) Option {
+	return func(g *generator) {
+		g.getPrefix = p
+	}
+}
+
+func OnlyForExportedField(b bool) Option {
+	return func(g *generator) {
+		g.onlyForExportedField = b
+	}
+}
